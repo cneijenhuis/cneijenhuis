@@ -8,11 +8,11 @@ Let's have a closer look at the details and at what can go wrong:
 
 ## The delivery fails
 
-What should the sender do if it can't deliver the webhook because the destination server or the network isn't available?
+What should the sender do if it can't deliver the Webhook because the destination server or the network isn't available?
 
 Turns out: It depends. If the callback is supposed to trigger a refund on your credit card, it should be retried ad nauseam. However, if the callback is supposed to trigger a push notification with "your food delivery is on the way", it should be dropped after a couple of minutes as the customer has received his meal already.
 
-## The receiver can't process a specific webhook
+## The receiver can't process a specific Webhook
 
 Bugs hide everywhere - especially in software. A bug in the receiver may only be triggered by a specific payload. How can the developers of the receiver retrieve this payload? A nice sender would offer a dead letter queue that can be accessed via a UI and/or an API.
 
@@ -22,7 +22,7 @@ How many HTTP requests can be send in parallel before overloading the receiver? 
 
 Workloads in commerce are often spikey. Your frontend needs to scale, but for many of the background processes, a viable strategy is to be asynchronous and buffer tasks. Webhooks are not a good buffer, because the sender pushes to the receiver. If the receiver can pull the work, he can consume it at his own pace.
 
-As a workaround, the receiver can refuse to accept webhooks under high load, and trust the sender to retry the delivery. However, the receiver would refuse incoming requests randomly. If the sender doesn't maintain a global FIFO queue (which is quite hard to scale), some tasks may be stuck for hours while others get processed on the first try.
+As a workaround, the receiver can refuse to accept Webhooks under high load, and trust the sender to retry the delivery. However, the receiver would refuse incoming requests randomly. If the sender doesn't maintain a global FIFO queue (which is quite hard to scale), some tasks may be stuck for hours while others get processed on the first try.
 
 ## Integration with monitoring systems
 
@@ -36,7 +36,7 @@ With a Message Queue, the delivery is clearly separated from the processing of t
 
 ## Filling a Message Queue from a Webhook
 
-If you are integrating with a system that only offers webhooks, fear not: It is quite easy to just accept the message and put it into the Message Queue of your choice. Better yet, a few Message Queues have an interface to act as a webhook-receiver themselves (for example IronMQ).
+If you are integrating with a system that only offers Webhooks, fear not: It is quite easy to just accept the message and put it into the Message Queue of your choice. Better yet, a few Message Queues have an interface to act as a webhook-receiver themselves (for example IronMQ).
 
 ## Sending a Webhook from Message Queue
 
@@ -44,10 +44,10 @@ I'd argue that it's better to use a "serverless" worker (i.e. AWS Lambda, Iron W
 
 # Callbacks in the commercetools platform
 
-When designing our API and platform, we're giving our best to not only make it easy to learn and develop for, but also easy to maintain once a shop is in production. When we started designing our callback API, we first looked deeply at webhooks, because everybody knows them, and they are, hands-down, the easiest thing to implement. But when we started designing for maintainability in a production environment, we found ourselves re-inventing the wheel and building yet another message queue.
+When designing our API and platform, we're giving our best to not only make it easy to learn and develop for, but also easy to maintain once a shop is in production. When we started designing our callback API, we first looked deeply at Webhooks, because everybody knows them, and they are, hands-down, the easiest thing to implement. But when we started designing for maintainability in a production environment, we found ourselves re-inventing the wheel and building yet another message queue.
 
-We decided to take a step back. While it surely would have been fun to build a Message Queue, our mission is first and foremost to design a great commerce platform! Therefore, we decided to let our callback API stand on the shoulder of giants: Messages are put into a Message Queue of your choice. We currently support SQS on AWS, PubSub on Google Cloud and IronMQ of iron.io. Just like with programming languages, you can choose the queue that fits your needs best.
+We decided to take a step back. While it surely would have been fun to build a Message Queue, our mission is first and foremost to design a great commerce platform! Therefore, we decided to let our callback API stand on the shoulder of giants: Messages are put into a Message Queue of your choice. We currently support SQS on AWS, Pub/Sub on Google Cloud and IronMQ of iron.io. Just like with programming languages, you can choose the queue that fits your needs best.
 
 # Conclusion
 
-Webhooks allow you to quickly glue two systems together. However, for business-critical callbacks it is necessary to be in control of edge cases and monitor the health of the system. Adressing all the concerns ontop of webhooks is certainly possible for the sender, but one ends up building yet another Message Queue.
+Webhooks allow you to quickly glue two systems together. However, for business-critical callbacks it is necessary to be in control of edge cases and monitor the health of the system. Addressing all the concerns on-top of Webhooks is certainly possible for the sender, but one ends up building yet another Message Queue.
