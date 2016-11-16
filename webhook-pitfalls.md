@@ -34,18 +34,20 @@ Fortunately, there is already a lot of software out there that is built to solve
 
 With a Message Queue, the delivery is clearly separated from the processing of the message. It allows the sender to hand it off with a much higher change of success, because neither bugs nor performance issues in the receiver will have an impact on the delivery. On the other hand, the receiver has control over the messages. Not only can the policies be defined, it's also possible to manually manage the state of the queue. Often this is possible via a UI, which may also allow you to peek at messages.
 
-## Using a Message Queue from a Webhook
+## Filling a Message Queue from a Webhook
 
-If you are integrating with a system that only offers webhooks, fear not: It is quite easy to just accept the message and put it into the message queue of your choice. Better yet, a few message queues have an interface to act as a webhook-receiver themselves (for example IronMQ).
+If you are integrating with a system that only offers webhooks, fear not: It is quite easy to just accept the message and put it into the Message Queue of your choice. Better yet, a few Message Queues have an interface to act as a webhook-receiver themselves (for example IronMQ).
+
+## Sending a Webhook from Message Queue
+
+I'd argue that it's better to use a "serverless" worker (i.e. AWS Lambda, Iron Worker or Google Function) to process messages, but most cloud-based Message Queues do support pushing messages via Webhooks (IronMQ and Pub/Sub do this natively, AWS has SNS). The advantage over "plain" Webhooks is that you are still able to configure retry policies, a dead letter queue and monitor the system.
 
 # Callbacks in the commercetools platform
 
 When designing our API and platform, we're giving our best to not only make it easy to learn and develop for, but also easy to maintain once a shop is in production. When we started designing our callback API, we first looked deeply at webhooks, because everybody knows them, and they are, hands-down, the easiest thing to implement. But when we started designing for maintainability in a production environment, we found ourselves re-inventing the wheel and building yet another message queue.
 
-We decided to take a step back. While it surely would have been fun to build a message queue, our mission is first and foremost to design a great commerce platform! Therefore, we decided to let our callback API stand on the shoulder of giants: Messages are put into a Message Queue of your choice. We currently support SQS on AWS, PubSub on Google Cloud and IronMQ of iron.io. Just like with programming languages, you can choose the queue that fits your needs best.
+We decided to take a step back. While it surely would have been fun to build a Message Queue, our mission is first and foremost to design a great commerce platform! Therefore, we decided to let our callback API stand on the shoulder of giants: Messages are put into a Message Queue of your choice. We currently support SQS on AWS, PubSub on Google Cloud and IronMQ of iron.io. Just like with programming languages, you can choose the queue that fits your needs best.
 
 # Conclusion
 
 Webhooks allow you to quickly glue two systems together. However, for business-critical callbacks it is necessary to be in control of edge cases and monitor the health of the system. Adressing all the concerns ontop of webhooks is certainly possible for the sender, but one ends up building yet another Message Queue.
-
-Using webhooks for critical pieces in a multi-million dollar commerce system is like bringing a knife to a gun fight.
